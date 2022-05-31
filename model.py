@@ -61,7 +61,7 @@ def main_model(args,device):
     niters_digs = np.ceil(np.log10(niters)) + 1
 
     # optimization
-    e_optimizer = torch.optim.Adam(logp_net.parameters(),
+    e_optimizer = torch.optim.Adam(g.parameters(),
                                    lr=args.lr, betas=(args.beta1, args.beta2),
                                    weight_decay=args.weight_decay)
     g_optimizer = torch.optim.Adam(list(g.parameters()),
@@ -193,12 +193,9 @@ def main_model(args,device):
             if itr % args.e_iters == 0:
                 x_g_detach = x_g.detach().requires_grad_()
                 
-                lg_detach = logp_net(x_g_detach).squeeze()
-                
-                if args.jem:
-                    ld, ld_logits = logp_net(x_d, return_logits=True)
-                else:
-                    ld, ld_logits = logp_net(x_d).squeeze(), torch.tensor(0.).to(device)
+                lg_detach = g.forward_d(x_g_detach).squeeze()
+
+                ld, ld_logits = g.forward_d(x_d).squeeze(), torch.tensor(0.).to(device)
 
                 grad_ld = torch.autograd.grad(ld.sum(), x_d,
                                                 create_graph=True)[0].flatten(start_dim=1).norm(2, 1)
@@ -231,7 +228,7 @@ def main_model(args,device):
 
             # gen obj
             if itr % args.g_iters == 0:
-                lg = logp_net(x_g).squeeze()
+                lg = g.forward_d(x_g).squeeze()
                 grad = torch.autograd.grad(lg.sum(), x_g, retain_graph=True)[0]
                 ebm_gn = grad.norm(2, 1).mean()
                 if args.ent_weight != 0.:
@@ -307,12 +304,12 @@ def main_model(args,device):
                 y_ds = []
                 y_preds = []
                 all_class_probs = []
-                logp_net.eval()
+                g.eval()
                 for x_d_, y_d_ in test_loader:
                     x_d_ = x_d_.to(device)
                     y_d_ = y_d_.to(device)
 
-                    _, ld_logits = logp_net(x_d_, return_logits=True)
+                    _, ld_logits = g.forward_d(x_d_, return_logits=True)
 
                     chosen = ld_logits.max(1).indices
                     acc = (chosen == y_d_).float()
@@ -383,7 +380,7 @@ def main_model(args,device):
                     plt.plot([0, 1], [0, 1], "k:")
                     plt.savefig("{}/cal.png".format(args.save_dir))
 
-                logp_net.train()
+                g.train()
 
 
 

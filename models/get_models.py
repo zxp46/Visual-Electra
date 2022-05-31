@@ -74,7 +74,7 @@ def get_models(args, log=True):
                 logp_net = BNDCGANDiscriminator(nout=nout)
             else:
                 # TODO: modify inputs of D
-                logp_net = TransGAN_D()
+                logp_net = TransGAN_G(noise_dim=args.noise_dim)
     else:
         raise ValueError
 

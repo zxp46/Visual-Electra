@@ -36,6 +36,9 @@ class VERAHMCGenerator(nn.Module):
         else:
             return x, h
 
+    def forward_d(self):
+        return self.g.forward_d(x)
+
     def logq_joint(self, x, h, return_mu=False):
         """
         Join distribution of data and latent.

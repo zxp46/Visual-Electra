@@ -70,6 +70,43 @@ def UpSampling(x, H, W):
         x = x.permute(0,2,1)
         return x, H, W
 
+class PatchMerging(nn.Module):
+    r""" Patch Merging Layer.
+    Args:
+        input_resolution (tuple[int]): Resolution of input feature.
+        dim (int): Number of input channels.
+        norm_layer (nn.Module, optional): Normalization layer.  Default: nn.LayerNorm
+    """
+
+    def __init__(self, dim, H, W, norm_layer=nn.LayerNorm):
+        super().__init__()
+        self.H = H
+        self.W = W
+        self.dim = dim
+        self.norm = norm_layer(2 * dim)
+
+    def forward(self, x):
+        """
+        x: B, H*W, C
+        """
+        H = self.H
+        W = self.W
+        B, L, C = x.shape
+        assert L == H * W, "input feature has wrong size"
+        assert H % 2 == 0 and W % 2 == 0, f"x size ({H}*{W}) are not even."
+
+        x = x.view(B, H, W, C)
+
+        x0 = x[:, 0::2, 0::2, :]  # B H/2 W/2 C
+        x1 = x[:, 1::2, 0::2, :]  # B H/2 W/2 C
+        x2 = x[:, 0::2, 1::2, :]  # B H/2 W/2 C
+        x3 = x[:, 1::2, 1::2, :]  # B H/2 W/2 C
+        x = torch.cat([x0, x1, x2, x3], -1)  # B H/2 W/2 4*C
+        x = x.view(B, -1, 4 * C)  # B H/2*W/2 4*C
+        x = self.norm(x)
+
+        return x
+
 class Encoder_Block(nn.Module):
     def __init__(self, dim, heads, mlp_ratio=4, drop_rate=0.):
         super().__init__()
@@ -123,6 +160,10 @@ class Generator(nn.Module):
         self.TransformerEncoder_encoder2 = TransformerEncoder(depth=self.depth2, dim=self.dim//4, heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
         self.TransformerEncoder_encoder3 = TransformerEncoder(depth=self.depth3, dim=self.dim//16, heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
 
+        self.PatchMerging3 = PatchMerging(dim, 32, 32)
+        self.PatchMerging2 = PatchMerging(dim*4, 16, 16)
+        self.PatchMerging1 = PatchMerging(dim*16, 8, 8)
+
 
         self.linear = nn.Sequential(nn.Conv2d(self.dim//16, 3, 1, 1, 0))
 
@@ -146,12 +187,39 @@ class Generator(nn.Module):
 
         return x
 
+    def forward_d(self, x):
+        b = x.shape[0]
+        cls_token = self.class_embedding.expand(b, -1, -1)
+
+        x = self.patches(x)
+        x = torch.cat((cls_token, x), dim=1)
+        x += self.positional_embedding3
+        x = self.droprate(x)
+        x = self.TransfomerEncoder3(x)
+        x = self.PatchMerging3(x)
+        x += self.positional_embedding2
+        x = self.droprate(x)
+        x = self.TransfomerEncoder2(x)
+        x = self.PatchMerging2(x)
+        x += self.positional_embedding_1
+        x = self.droprate(x)
+        x = self.TransfomerEncoder1(x)
+        x = self.PatchMerging1(x)
+        x = x.view(b, -1)
+        x = self.norm(x)
+        x = self.out(x[:, 0]).mean(dim=-1)
+        return x
+
+    def get_parameter_list(self):
+        return [self.TransformerEncoder_encoder1, self.TransformerEncoder_encoder2, self.TransformerEncoder_encoder3],\
+            [self.positional_embedding_1, self.positional_embedding_2, self.positional_embedding_3]
+
 
 # TODO: Modify D to share parameters with G
 class Discriminator(nn.Module):
     def __init__(self, image_size=32, patch_size=4, input_channel=3, num_classes=1,
-                 dim=384, depth=7, heads=4, mlp_ratio=4,
-                 drop_rate=0.):
+                 dim=24, depth=7, heads=4, mlp_ratio=4,
+                 drop_rate=0., transformer_blocks=[], positional_embeddings=[]):
         super().__init__()
         if image_size % patch_size != 0:
             raise ValueError('Image size must be divisible by patch size.')
@@ -162,6 +230,11 @@ class Discriminator(nn.Module):
         self.patches = ImgPatches(input_channel, dim, self.patch_size)
 
         # Embedding for patch position and class
+        self.positional_embedding_1, self.positional_embedding_2, self.positional_embedding_3 = positional_embeddings
+        self.TransformerEncoder_encoder1, self.TransformerEncoder_encoder2, self.TransformerEncoder_encoder3 = transformer_blocks
+        self.PatchMerging1 = PatchMerging(dim, 32, 32)
+        self.PatchMerging2 = PatchMerging(dim*4, 16, 16)
+        self.PatchMerging3 = PatchMerging(dim*16, 8, 8)
         self.positional_embedding = nn.Parameter(torch.zeros(1, num_patches+1, dim))
         self.class_embedding = nn.Parameter(torch.zeros(1, 1, dim))
         nn.init.trunc_normal_(self.positional_embedding, std=0.2)
@@ -189,9 +262,19 @@ class Discriminator(nn.Module):
 
         x = self.patches(x)
         x = torch.cat((cls_token, x), dim=1)
-        x += self.positional_embedding
+        x += self.positional_embedding1
         x = self.droprate(x)
-        x = self.TransfomerEncoder(x)
+        x = self.TransfomerEncoder1(x)
+        x = self.PatchMerging1(x)
+        x += self.positional_embedding2
+        x = self.droprate(x)
+        x = self.TransfomerEncoder2(x)
+        x = self.PatchMerging2(x)
+        x += self.positional_embedding_3
+        x = self.droprate(x)
+        x = self.TransfomerEncoder3(x)
+        x = self.PatchMerging3(x)
+        x = x.view(b, -1)
         x = self.norm(x)
         x = self.out(x[:, 0])
         return x
