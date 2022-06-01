@@ -291,5 +291,5 @@ class Discriminator(nn.Module):
         x = self.PatchMerging3(x)
         x = x.view(b, -1)
         x = self.norm(x)
-        x = self.out(x.mean(dim=-1))
+        x = self.out(x.mean(dim=1))
         return x
