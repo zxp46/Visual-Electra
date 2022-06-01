@@ -273,10 +273,10 @@ class Discriminator(nn.Module):
 
     def forward(self, x):
         b = x.shape[0]
-        cls_token = self.class_embedding.expand(b, -1, -1)
+        # cls_token = self.class_embedding.expand(b, -1, -1)
 
         x = self.patches(x)
-        x = torch.cat((cls_token, x), dim=1)
+        # x = torch.cat((cls_token, x), dim=1)
         x += self.positional_embedding1
         x = self.droprate(x)
         x = self.TransfomerEncoder1(x)
@@ -291,5 +291,5 @@ class Discriminator(nn.Module):
         x = self.PatchMerging3(x)
         x = x.view(b, -1)
         x = self.norm(x)
-        x = self.out(x[:, 0])
+        x = self.out(x.mean(dim=-1))
         return x
