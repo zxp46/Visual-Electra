@@ -83,7 +83,7 @@ class PatchMerging(nn.Module):
         self.H = H
         self.W = W
         self.dim = dim
-        self.norm = norm_layer(2 * dim)
+        self.norm = norm_layer(4 * dim)
     def forward(self, x):
         """
         x: B, H*W, C
@@ -155,17 +155,15 @@ class Generator(nn.Module):
         self.positional_embedding_2 = nn.Parameter(torch.zeros(1, (8*2)**2, 384//4))
         self.positional_embedding_3 = nn.Parameter(torch.zeros(1, (8*4)**2, 384//16))
 
-        self.positional_embedding_4 = nn.Parameter(torch.zeros(1, (8//2)**2, 384*4))
-        self.positional_embedding_5 = nn.Parameter(torch.zeros(1, (8//4)**2, 384))
         print("Position",self.positional_embedding_1.shape)
 
         self.TransformerEncoder_encoder1 = TransformerEncoder(depth=self.depth1, dim=self.dim,heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
         self.TransformerEncoder_encoder2 = TransformerEncoder(depth=self.depth2, dim=self.dim//4, heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
         self.TransformerEncoder_encoder3 = TransformerEncoder(depth=self.depth3, dim=self.dim//16, heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
 
-        self.PatchMerging3 = PatchMerging(dim//8, 2, 2)
-        self.PatchMerging2 = PatchMerging(dim//2, 4, 4)
-        self.PatchMerging1 = PatchMerging(dim*2, 8, 8)
+        self.PatchMerging3 = PatchMerging(dim//16, 2, 2)
+        self.PatchMerging2 = PatchMerging(dim//4, 4, 4)
+        self.PatchMerging1 = PatchMerging(dim, 8, 8)
 
         self.downsampling_1 = nn.Linear(self.dim*4,self.dim//4)
         self.downsampling_2 = nn.Linear(self.dim,self.dim//16)
@@ -180,7 +178,7 @@ class Generator(nn.Module):
         self.depth = depth
 
         self.class_embedding = nn.Parameter(torch.zeros(1, 1, dim))
-        self.patches = ImgPatches(input_channel, dim, self.patch_size)
+        self.patches = ImgPatches(input_channel, dim // 16, self.patch_size)
         self.droprate = nn.Dropout(p=drop_rate)
         self.norm = nn.LayerNorm(dim//4)
   
@@ -220,26 +218,22 @@ class Generator(nn.Module):
     def forward_d(self, x):
         b = x.shape[0]
         x = self.patches(x)
-        x += self.positional_embedding_1
+        x += self.positional_embedding_3
         x = self.droprate(x)
-        x = self.TransformerEncoder_encoder1(x)
-        x = self.PatchMerging1(x)
-        
-        x += self.positional_embedding_4
-        x = self.droprate(x)
-        x = self.downsampling_1(x)
+        x = self.TransformerEncoder_encoder3(x)
+        x = self.PatchMerging3(x)
 
+        x += self.positional_embedding_2
+        x = self.droprate(x)
+        # x = self.downsampling_1(x)
         x = self.TransformerEncoder_encoder2(x)
         x = self.PatchMerging2(x)
-        x += self.positional_embedding_5
+        x += self.positional_embedding_1
         x = self.droprate(x)
-        x = self.downsampling_2(x)
-        x = self.TransformerEncoder_encoder3(x)
-
-        x = self.PatchMerging3(x)
-        x = x.view(b, -1)
+        # x = self.downsampling_2(x)
+        x = self.TransformerEncoder_encoder1(x)
         x = self.norm(x)
-        x = x.mean(dim=-1)
+        x = x.mean(dim=1)
         return x
 
     def get_parameter_list(self):
