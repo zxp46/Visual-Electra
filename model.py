@@ -192,7 +192,7 @@ def main_model(args,device):
             # ebm (contrastive divergence) objective
             if itr % args.e_iters == 0:
                 x_g_detach = x_g.detach().requires_grad_()
-                
+                print(type(x_g_detach))
                 lg_detach = g.forward_d(x_g_detach).squeeze()
 
                 ld, ld_logits = g.forward_d(x_d).squeeze(), torch.tensor(0.).to(device)
