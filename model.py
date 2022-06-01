@@ -194,6 +194,8 @@ def main_model(args,device):
                 x_g_detach = x_g.detach().requires_grad_()
                 print(type(x_g_detach))
                 lg_detach = g.forward_d(x_g_detach).squeeze()
+                #TODO return classifier logits
+                # ld, ld_logits = logp_net(x_d, return_logits=True)
 
                 ld, ld_logits = g.forward_d(x_d).squeeze(), torch.tensor(0.).to(device)
 
