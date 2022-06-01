@@ -178,7 +178,7 @@ class Generator(nn.Module):
         self.depth = depth
 
         self.class_embedding = nn.Parameter(torch.zeros(1, 1, dim))
-        self.patches = ImgPatches(input_channel, dim // 16, self.patch_size)
+        self.patches = ImgPatches(input_channel, dim // 16, 1)
         self.droprate = nn.Dropout(p=drop_rate)
         self.norm = nn.LayerNorm(dim//4)
   
@@ -198,7 +198,7 @@ class Generator(nn.Module):
 
         x = self.mlp(noise).view(-1, self.initial_size ** 2, self.dim)
 
-        x = x + self.positional_embedding_1
+        x = x + self.positional_embedding_3
         H, W = self.initial_size, self.initial_size
         x = self.TransformerEncoder_encoder1(x)
 
@@ -218,7 +218,7 @@ class Generator(nn.Module):
     def forward_d(self, x):
         b = x.shape[0]
         x = self.patches(x)
-        x += self.positional_embedding_3
+        x += self.positional_embedding_1
         x = self.droprate(x)
         x = self.TransformerEncoder_encoder3(x)
         x = self.PatchMerging3(x)
