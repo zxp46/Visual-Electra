@@ -36,8 +36,8 @@ class VERAHMCGenerator(nn.Module):
         else:
             return x, h
 
-    def forward_d(self,x):
-        return self.g.forward_d(x)
+    def forward_d(self,x, return_logits=False):
+        return self.g.forward_d(x, return_logits)
 
     def logq_joint(self, x, h, return_mu=False):
         """

@@ -74,7 +74,7 @@ def get_models(args, log=True):
                 logp_net = BNDCGANDiscriminator(nout=nout)
             else:
                 # TODO: modify inputs of D
-                logp_net = TransGAN_G(noise_dim=args.noise_dim)
+                logp_net = None
     else:
         raise ValueError
 
@@ -134,13 +134,8 @@ def get_models(args, log=True):
         return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     if log:
-        utils.print_log("logp_net", args)
-        utils.print_log(logp_net, args)
         utils.print_log("generator", args)
         utils.print_log(generator, args)
-        utils.print_log("{} ebm parameters".format(count_parameters(logp_net)), args)
         utils.print_log("{} generator parameters".format(count_parameters(generator)), args)
-
-    if args.clf:
-        logp_net = JEM(logp_net)
+        
     return logp_net, generator

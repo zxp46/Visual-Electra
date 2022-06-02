@@ -1,5 +1,5 @@
 {
-    "batch_size": 40,
+    "batch_size": 6,
     "beta1": 0.0,
     "beta2": 0.9,
     "buffer_size": 10000,
@@ -33,7 +33,7 @@
     "glr": 6e-05,
     "h_dim": 100,
     "img_size": null,
-    "jem": true,
+    "jem": false,
     "jem_baseline": false,
     "labels_per_class": 0,
     "load_path": null,

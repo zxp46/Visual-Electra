@@ -195,19 +195,22 @@ class Generator(nn.Module):
             nn.init.constant_(m.weight, 1.0)
 
     def forward(self, noise):
-
+        print("Generator Forward")
         x = self.mlp(noise).view(-1, self.initial_size ** 2, self.dim)
-
+        print("MLP",x.shape)
         x = x + self.positional_embedding_1
         H, W = self.initial_size, self.initial_size
         x = self.TransformerEncoder_encoder1(x)
+        print("E1",x.shape)
 
         x,H,W = UpSampling(x,H,W)
         x = x + self.positional_embedding_2
         x = self.TransformerEncoder_encoder2(x)
+        print("E2",x.shape)
 
         x,H,W = UpSampling(x,H,W)
         x = x + self.positional_embedding_3
+        print("E3",x.shape)
 
 
         x = self.TransformerEncoder_encoder3(x)
@@ -215,27 +218,42 @@ class Generator(nn.Module):
 
         return x
 
-    def forward_d(self, x):
+    def forward_d(self, x, return_logits=False):
+        print("Discriminator Forward")
         b = x.shape[0]
         x = self.patches(x)
         x = x + self.positional_embedding_3
         x = self.droprate(x)
         x = self.TransformerEncoder_encoder3(x)
+        print("E3",x.shape)
+
         x = self.PatchMerging3(x)
+        print("M3",x.shape)
 
         x = x + self.positional_embedding_2
         x = self.droprate(x)
         # x = self.downsampling_1(x)
         x = self.TransformerEncoder_encoder2(x)
+        print("E2",x.shape)
+        
         x = self.PatchMerging2(x)
+        print("M2",x.shape)
+        
         x = x + self.positional_embedding_1
         x = self.droprate(x)
         # x = self.downsampling_2(x)
         x = self.TransformerEncoder_encoder1(x)
+        print("E1",x.shape)
+        
         x = self.norm(x)
         x = self.out(x)
+        print("Out",x.shape)
+
         x = x.mean(dim=1)
-        return x
+        print("Mean",x.shape)
+        if return_logits:
+            return x.logsumexp(dim=-1).squeeze(),x
+        return x.logsumexp(dim=-1).squeeze()
 
     def get_parameter_list(self):
         return [self.TransformerEncoder_encoder1, self.TransformerEncoder_encoder2, self.TransformerEncoder_encoder3],\

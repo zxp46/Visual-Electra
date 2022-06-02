@@ -50,8 +50,6 @@ def main_model(args,device):
 
     g.train()
     g.to(device)
-    logp_net.train()
-    logp_net.to(device)
 
     # data
     train_loader, test_loader, plot = utils.get_data(args)
@@ -99,7 +97,6 @@ def main_model(args,device):
         kl = ckpt["kl"]
         eval_itrs = ckpt["eval_itrs"]
         itr = ckpt["itr"]
-        logp_net.load_state_dict(ckpt["model"]["logp_net"])
         g.load_state_dict(ckpt["model"]["g"])
         e_optimizer.load_state_dict(ckpt["optimizer"]["e"])
         g_optimizer.load_state_dict(ckpt["optimizer"]["g"])
@@ -115,7 +112,6 @@ def main_model(args,device):
         # ckpt_path will be made automatically on v2
         try:
             print("PATH",path)
-            logp_net.cpu()
             g.cpu()
             torch.save({
                 # if last batch in epoch, go to next one
@@ -130,7 +126,6 @@ def main_model(args,device):
                 "eval_itrs": eval_itrs,
                 "itr": itr,
                 "model": {
-                    "logp_net": logp_net.state_dict(),
                     "g": g.state_dict()
                 },
                 "optimizer": {
@@ -142,7 +137,6 @@ def main_model(args,device):
                     "g": g_lr_scheduler.state_dict()
                 }
             }, path)
-            logp_net.to(device)
             g.to(device)
         except IOError:
             utils.print_log("Unable to save %s %d" % (path, itr), args)
@@ -197,11 +191,8 @@ def main_model(args,device):
                 print(type(x_g_detach))
                 lg_detach = g.forward_d(x_g_detach).squeeze()
                 #TODO return classifier logits
-                # ld, ld_logits = logp_net(x_d, return_logits=True)
-
-                ld, ld_logits = g.forward_d(x_d).squeeze(), torch.tensor(0.).to(device)
-                ld_logits = ld
-
+                ld, ld_logits = g.forward_d(x_d, return_logits=True)
+                print("LD",ld.shape,"LD_logits",ld_logits.shape)
                 grad_ld = torch.autograd.grad(ld.sum(), x_d,
                                                 create_graph=True)[0].flatten(start_dim=1).norm(2, 1)
 
@@ -211,10 +202,12 @@ def main_model(args,device):
                             (lg_detach ** 2).mean() * args.n_control + \
                             (grad_ld ** 2. / 2.).mean() * args.pg_control + \
                             unsup_ent.mean() * args.clf_ent_weight
+                print("E_Loss",e_loss.shape)
 
                 #Classifier
                 c_loss = torch.nn.CrossEntropyLoss()(ld_logits, y_l)
 
+                print("C_Loss",c_loss.shape)
                 chosen = ld_logits.max(1).indices
                 train_acc = (chosen == y_l).float().mean().item()
 
