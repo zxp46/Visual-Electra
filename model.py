@@ -188,7 +188,7 @@ def main_model(args,device):
             # gen obj
             if itr % args.g_iters == 0:
                 lg = g.forward_d(x_g).squeeze()
-                print("lg",lg.shape)
+                # print("lg",lg.shape)
                 grad = torch.autograd.grad(lg.sum(), x_g, retain_graph=True)[0]
                 ebm_gn = grad.norm(2, 1).mean()
                 if args.ent_weight != 0.:
@@ -197,7 +197,7 @@ def main_model(args,device):
                 logq_obj = lg.mean() + args.ent_weight * entropy_obj
 
                 g_loss = -logq_obj
-                print("G Loss",g_loss.shape)
+                # print("G Loss",g_loss.shape)
                 g_optimizer.zero_grad()
                 g_loss.backward()
                 g_optimizer.step()
@@ -208,7 +208,7 @@ def main_model(args,device):
                 lg_detach = g.forward_d(x_g_detach).squeeze()
                 #TODO return classifier logits
                 ld, ld_logits = g.forward_d(x_d, return_logits=True)
-                print("LD",ld.shape,"LD_logits",ld_logits.shape)
+                # print("LD",ld.shape,"LD_logits",ld_logits.shape)
                 grad_ld = torch.autograd.grad(ld.sum(), x_d,
                                                 create_graph=True)[0].flatten(start_dim=1).norm(2, 1)
 
@@ -218,12 +218,12 @@ def main_model(args,device):
                             (lg_detach ** 2).mean() * args.n_control + \
                             (grad_ld ** 2. / 2.).mean() * args.pg_control + \
                             unsup_ent.mean() * args.clf_ent_weight
-                print("E_Loss",e_loss.shape)
+                # print("E_Loss",e_loss.shape)
 
                 #Classifier
                 c_loss = torch.nn.CrossEntropyLoss()(ld_logits, y_l)
 
-                print("C_Loss",c_loss.shape)
+                # print("C_Loss",c_loss.shape)
                 chosen = ld_logits.max(1).indices
                 train_acc = (chosen == y_l).float().mean().item()
 
