@@ -185,10 +185,26 @@ def main_model(args,device):
             # sample from q(x, h)
             x_g, h_g = g.sample(args.batch_size, requires_grad=True)
 
+            # gen obj
+            if itr % args.g_iters == 0:
+                lg = g.forward_d(x_g).squeeze()
+                print("lg",lg.shape)
+                grad = torch.autograd.grad(lg.sum(), x_g, retain_graph=True)[0]
+                ebm_gn = grad.norm(2, 1).mean()
+                if args.ent_weight != 0.:
+                    entropy_obj, ent_gn = g.entropy_obj(x_g, h_g)
+
+                logq_obj = lg.mean() + args.ent_weight * entropy_obj
+
+                g_loss = -logq_obj
+                print("G Loss",g_loss.shape)
+                g_optimizer.zero_grad()
+                g_loss.backward()
+                g_optimizer.step()
+
             # ebm (contrastive divergence) objective
             if itr % args.e_iters == 0:
                 x_g_detach = x_g.detach().requires_grad_()
-                print(type(x_g_detach))
                 lg_detach = g.forward_d(x_g_detach).squeeze()
                 #TODO return classifier logits
                 ld, ld_logits = g.forward_d(x_d, return_logits=True)
@@ -224,22 +240,7 @@ def main_model(args,device):
                 (e_loss + args.clf_weight * c_loss).backward()
                 e_optimizer.step()
 
-            # gen obj
-            if itr % args.g_iters == 0:
-                lg = g.forward_d(x_g).squeeze()
-                print("lg",lg.shape)
-                grad = torch.autograd.grad(lg.sum(), x_g, retain_graph=True)[0]
-                ebm_gn = grad.norm(2, 1).mean()
-                if args.ent_weight != 0.:
-                    entropy_obj, ent_gn = g.entropy_obj(x_g, h_g)
-
-                logq_obj = lg.mean() + args.ent_weight * entropy_obj
-
-                g_loss = -logq_obj
-                print("G Loss",g_loss.shape)
-                g_optimizer.zero_grad()
-                g_loss.backward()
-                g_optimizer.step()
+            
 
             # clamp sigma to (.01, max_sigma) for generators
             if args.generator_type in ["verahmc", "vera"]:

@@ -33728,3 +33728,479 @@ VERAGenerator(
   )
 )
 12737230 generator parameters
+Using 1 GPU(s).
+generator
+VERAGenerator(
+  (g): Generator(
+    (mlp): Linear(in_features=128, out_features=24576, bias=True)
+    (TransformerEncoder_encoder1): TransformerEncoder(
+      (Encoder_Blocks): ModuleList(
+        (0): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (1): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (2): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (3): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (4): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (TransformerEncoder_encoder2): TransformerEncoder(
+      (Encoder_Blocks): ModuleList(
+        (0): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (1): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (2): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (3): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (TransformerEncoder_encoder3): TransformerEncoder(
+      (Encoder_Blocks): ModuleList(
+        (0): Encoder_Block(
+          (ln1): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=24, out_features=72, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=24, out_features=24, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=24, out_features=96, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=96, out_features=24, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (1): Encoder_Block(
+          (ln1): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=24, out_features=72, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=24, out_features=24, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=24, out_features=96, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=96, out_features=24, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (PatchMerging3): PatchMerging(
+      (norm): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+    )
+    (PatchMerging2): PatchMerging(
+      (norm): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (PatchMerging1): PatchMerging(
+      (norm): LayerNorm((1536,), eps=1e-05, elementwise_affine=True)
+    )
+    (downsampling_1): Linear(in_features=1536, out_features=96, bias=True)
+    (downsampling_2): Linear(in_features=384, out_features=24, bias=True)
+    (linear): Sequential(
+      (0): Conv2d(24, 3, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (patches): ImgPatches(
+      (patch_embed): Conv2d(3, 24, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (droprate): Dropout(p=0.0, inplace=False)
+    (norm): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    (out): Linear(in_features=384, out_features=10, bias=True)
+  )
+)
+12737230 generator parameters
+Using 1 GPU(s).
+generator
+VERAGenerator(
+  (g): Generator(
+    (mlp): Linear(in_features=128, out_features=24576, bias=True)
+    (TransformerEncoder_encoder1): TransformerEncoder(
+      (Encoder_Blocks): ModuleList(
+        (0): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (1): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (2): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (3): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (4): Encoder_Block(
+          (ln1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=384, out_features=1152, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=384, out_features=384, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=1536, out_features=384, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (TransformerEncoder_encoder2): TransformerEncoder(
+      (Encoder_Blocks): ModuleList(
+        (0): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (1): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (2): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (3): Encoder_Block(
+          (ln1): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=96, out_features=288, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=96, out_features=96, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=96, out_features=384, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=384, out_features=96, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (TransformerEncoder_encoder3): TransformerEncoder(
+      (Encoder_Blocks): ModuleList(
+        (0): Encoder_Block(
+          (ln1): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=24, out_features=72, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=24, out_features=24, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=24, out_features=96, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=96, out_features=24, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+        (1): Encoder_Block(
+          (ln1): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (attn): Attention(
+            (qkv): Linear(in_features=24, out_features=72, bias=False)
+            (attention_dropout): Dropout(p=0.0, inplace=False)
+            (out): Sequential(
+              (0): Linear(in_features=24, out_features=24, bias=True)
+              (1): Dropout(p=0.0, inplace=False)
+            )
+          )
+          (ln2): LayerNorm((24,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (fc1): Linear(in_features=24, out_features=96, bias=True)
+            (act): GELU()
+            (fc2): Linear(in_features=96, out_features=24, bias=True)
+            (droprateout): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (PatchMerging3): PatchMerging(
+      (norm): LayerNorm((96,), eps=1e-05, elementwise_affine=True)
+    )
+    (PatchMerging2): PatchMerging(
+      (norm): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (PatchMerging1): PatchMerging(
+      (norm): LayerNorm((1536,), eps=1e-05, elementwise_affine=True)
+    )
+    (downsampling_1): Linear(in_features=1536, out_features=96, bias=True)
+    (downsampling_2): Linear(in_features=384, out_features=24, bias=True)
+    (linear): Sequential(
+      (0): Conv2d(24, 3, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (patches): ImgPatches(
+      (patch_embed): Conv2d(3, 24, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (droprate): Dropout(p=0.0, inplace=False)
+    (norm): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    (out): Linear(in_features=384, out_features=10, bias=True)
+  )
+)
+12737230 generator parameters
