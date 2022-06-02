@@ -227,6 +227,7 @@ def main_model(args,device):
             # gen obj
             if itr % args.g_iters == 0:
                 lg = g.forward_d(x_g).squeeze()
+                print("lg",lg.shape)
                 grad = torch.autograd.grad(lg.sum(), x_g, retain_graph=True)[0]
                 ebm_gn = grad.norm(2, 1).mean()
                 if args.ent_weight != 0.:
@@ -235,7 +236,7 @@ def main_model(args,device):
                 logq_obj = lg.mean() + args.ent_weight * entropy_obj
 
                 g_loss = -logq_obj
-
+                print("G Loss",g_loss.shape)
                 g_optimizer.zero_grad()
                 g_loss.backward()
                 g_optimizer.step()
