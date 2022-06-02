@@ -198,7 +198,7 @@ class Generator(nn.Module):
 
         x = self.mlp(noise).view(-1, self.initial_size ** 2, self.dim)
 
-        x = x + self.positional_embedding_3
+        x = x + self.positional_embedding_1
         H, W = self.initial_size, self.initial_size
         x = self.TransformerEncoder_encoder1(x)
 
