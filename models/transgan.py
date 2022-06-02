@@ -136,7 +136,7 @@ class TransformerEncoder(nn.Module):
 
 class Generator(nn.Module):
     """docstring for Generator"""
-    def __init__(self, noise_dim=1024, depth1=5, depth2=4, depth3=2, initial_size=8, dim=384, heads=4, mlp_ratio=4, drop_rate=0., input_channel=3,patch_size=4,image_size=32,depth=7,num_classes=1):#,device=device):
+    def __init__(self, noise_dim=1024, depth1=5, depth2=4, depth3=2, initial_size=8, dim=384, heads=4, mlp_ratio=4, drop_rate=0., input_channel=3,patch_size=4,image_size=32,depth=7,num_classes=10):#,device=device):
         super(Generator, self).__init__()
 
         #self.device = device
@@ -161,8 +161,8 @@ class Generator(nn.Module):
         self.TransformerEncoder_encoder2 = TransformerEncoder(depth=self.depth2, dim=self.dim//4, heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
         self.TransformerEncoder_encoder3 = TransformerEncoder(depth=self.depth3, dim=self.dim//16, heads=self.heads, mlp_ratio=self.mlp_ratio, drop_rate=self.droprate_rate)
 
-        self.PatchMerging3 = PatchMerging(dim//16, 2, 2)
-        self.PatchMerging2 = PatchMerging(dim//4, 4, 4)
+        self.PatchMerging3 = PatchMerging(dim//16, 32, 32)
+        self.PatchMerging2 = PatchMerging(dim//4, 16, 16)
         self.PatchMerging1 = PatchMerging(dim, 8, 8)
 
         self.downsampling_1 = nn.Linear(self.dim*4,self.dim//4)
@@ -180,9 +180,9 @@ class Generator(nn.Module):
         self.class_embedding = nn.Parameter(torch.zeros(1, 1, dim))
         self.patches = ImgPatches(input_channel, dim // 16, 1)
         self.droprate = nn.Dropout(p=drop_rate)
-        self.norm = nn.LayerNorm(dim//4)
+        self.norm = nn.LayerNorm(dim)
   
-        # self.out = nn.Linear(dim, num_classes)
+        self.out = nn.Linear(dim, num_classes)
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -218,21 +218,22 @@ class Generator(nn.Module):
     def forward_d(self, x):
         b = x.shape[0]
         x = self.patches(x)
-        x += self.positional_embedding_1
+        x = x + self.positional_embedding_3
         x = self.droprate(x)
         x = self.TransformerEncoder_encoder3(x)
         x = self.PatchMerging3(x)
 
-        x += self.positional_embedding_2
+        x = x + self.positional_embedding_2
         x = self.droprate(x)
         # x = self.downsampling_1(x)
         x = self.TransformerEncoder_encoder2(x)
         x = self.PatchMerging2(x)
-        x += self.positional_embedding_1
+        x = x + self.positional_embedding_1
         x = self.droprate(x)
         # x = self.downsampling_2(x)
         x = self.TransformerEncoder_encoder1(x)
         x = self.norm(x)
+        x = self.out(x)
         x = x.mean(dim=1)
         return x
 

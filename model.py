@@ -164,6 +164,8 @@ def main_model(args,device):
 
     t = time.time()
 
+    torch.autograd.set_detect_anomaly(True)
+
     for epoch in range(start_epoch, args.n_epochs):
         for x_d, y_d in train_loader:
             #Load Data
@@ -198,6 +200,7 @@ def main_model(args,device):
                 # ld, ld_logits = logp_net(x_d, return_logits=True)
 
                 ld, ld_logits = g.forward_d(x_d).squeeze(), torch.tensor(0.).to(device)
+                ld_logits = ld
 
                 grad_ld = torch.autograd.grad(ld.sum(), x_d,
                                                 create_graph=True)[0].flatten(start_dim=1).norm(2, 1)
@@ -252,7 +255,7 @@ def main_model(args,device):
             e_lr_scheduler.step()
             g_lr_scheduler.step()
 
-            itr += 1
+            itr = itr + 1
 
             #Logging
             if itr % args.print_every == 0:
