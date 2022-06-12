@@ -10,8 +10,8 @@ from models.generator import VERAHMCGenerator, VERAGenerator
 from models.jem import JEM
 from models.mlp import small_mlp_ebm, large_mlp_ebm, small_mlp_generator, large_mlp_generator, MOG, NICE
 from models.resnet import ResNetDiscriminator, ResNetGenerator
-from models.transgan import Generator as TransGAN_G
-# from models.transgan import Discriminator as TransGAN_D
+from models.transgan_original import Generator as TransGAN_G
+from models.transgan_original import Discriminator as TransGAN_D
 
 from utils.toy_data import TOY_DSETS
 from tabular import TAB_DSETS
@@ -74,7 +74,7 @@ def get_models(args, log=True):
                 logp_net = BNDCGANDiscriminator(nout=nout)
             else:
                 # TODO: modify inputs of D
-                logp_net = None
+                logp_net = TransGAN_D()
     else:
         raise ValueError
 

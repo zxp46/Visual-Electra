@@ -196,6 +196,7 @@ def main_model(args,device):
 
                 logq_obj = lg.mean() + args.ent_weight * entropy_obj
 
+                # Modified g scale
                 g_loss = -logq_obj
                 # print("G Loss",g_loss.shape)
                 g_optimizer.zero_grad()

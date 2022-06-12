@@ -136,7 +136,7 @@ class TransformerEncoder(nn.Module):
 
 class Generator(nn.Module):
     """docstring for Generator"""
-    def __init__(self, noise_dim=1024, depth1=5, depth2=4, depth3=2, initial_size=8, dim=384, heads=4, mlp_ratio=4, drop_rate=0., input_channel=3,patch_size=4,image_size=32,depth=7,num_classes=10):#,device=device):
+    def __init__(self, noise_dim=1024, depth1=2, depth2=2, depth3=4, initial_size=8, dim=384, heads=4, mlp_ratio=4, drop_rate=0., input_channel=3,patch_size=4,image_size=32,depth=7,num_classes=10):#,device=device):
         super(Generator, self).__init__()
 
         #self.device = device
@@ -180,9 +180,9 @@ class Generator(nn.Module):
         self.class_embedding = nn.Parameter(torch.zeros(1, 1, dim))
         self.patches = ImgPatches(input_channel, dim // 16, 1)
         self.droprate = nn.Dropout(p=drop_rate)
-        self.norm = nn.LayerNorm(dim)
+        self.norm = nn.LayerNorm(dim // 16)
   
-        self.out = nn.Linear(dim, num_classes)
+        self.out = nn.Linear(dim // 16, num_classes)
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -196,25 +196,23 @@ class Generator(nn.Module):
 
     def forward(self, noise):
         # print("Generator Forward")
-        x = self.mlp(noise).view(-1, self.initial_size ** 2, self.dim)
-        # print("MLP",x.shape)
-        x = x + self.positional_embedding_1
-        H, W = self.initial_size, self.initial_size
-        x = self.TransformerEncoder_encoder1(x)
-        # print("E1",x.shape)
+        x = self.mlp(noise).view(-1, self.initial_size ** 2 * 16, self.dim // 16)
 
-        x,H,W = UpSampling(x,H,W)
+        # x = x + self.positional_embedding_1
+        H, W = self.initial_size * 4, self.initial_size * 4
+        """
+        x = self.TransformerEncoder_encoder1(x)
+
+        x, H, W = UpSampling(x, H, W)
         x = x + self.positional_embedding_2
         x = self.TransformerEncoder_encoder2(x)
-        # print("E2",x.shape)
 
-        x,H,W = UpSampling(x,H,W)
+        x, H, W = UpSampling(x, H, W)
+        """
         x = x + self.positional_embedding_3
-        # print("E3",x.shape)
-
 
         x = self.TransformerEncoder_encoder3(x)
-        x = self.linear(x.permute(0, 2, 1).view(-1, self.dim//16, H, W))
+        x = self.linear(x.permute(0, 2, 1).view(-1, self.dim // 16, H, W))
 
         return x
 
@@ -226,24 +224,6 @@ class Generator(nn.Module):
         x = self.droprate(x)
         x = self.TransformerEncoder_encoder3(x)
         # print("E3",x.shape)
-
-        x = self.PatchMerging3(x)
-        # print("M3",x.shape)
-
-        x = x + self.positional_embedding_2
-        x = self.droprate(x)
-        # x = self.downsampling_1(x)
-        x = self.TransformerEncoder_encoder2(x)
-        # print("E2",x.shape)
-        
-        x = self.PatchMerging2(x)
-        # print("M2",x.shape)
-        
-        x = x + self.positional_embedding_1
-        x = self.droprate(x)
-        # x = self.downsampling_2(x)
-        x = self.TransformerEncoder_encoder1(x)
-        # print("E1",x.shape)
         
         x = self.norm(x)
         x = self.out(x)

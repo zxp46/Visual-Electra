@@ -119,7 +119,7 @@ if __name__ == "__main__":
     # logging + evaluation
     parser.add_argument("--save_dir", type=str, default='/tmp/pgan_simp')
     parser.add_argument("--ckpt_path", type=str, default=None)
-    parser.add_argument("--ckpt_every", type=int, default=10, help="Epochs between checkpoint save")
+    parser.add_argument("--ckpt_every", type=int, default=1000, help="Epochs between checkpoint save")
     parser.add_argument("--save_every", type=int, default=100000, help="Saving models for evaluation")
     parser.add_argument("--eval_every", type=int, default=200, help="Evaluating models on validation set")
     parser.add_argument("--print_every", type=int, default=10000, help="Iterations between print")
