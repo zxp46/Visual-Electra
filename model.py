@@ -126,7 +126,8 @@ def main_model(args,device):
                 "eval_itrs": eval_itrs,
                 "itr": itr,
                 "model": {
-                    "g": g.state_dict()
+                    "g": g.state_dict(),
+                    "e": logp_net.state_dict()
                 },
                 "optimizer": {
                     "e": e_optimizer.state_dict(),
